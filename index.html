@@ -1030,12 +1030,16 @@ progress.reading-position::-moz-progress-bar {
                     }
                 }
                 else if(opcion){
-                    eliminarFecha('tPCR');
-                    d3.selectAll('.'+opcion).style('display','none');
-                    d3.select('#'+opcion+rect.id).style('display','block');
-                    input[opcion]=d3.select(rect).attr('fecha');
-                    let nfecha = d3.select('#f'+opcion).html('').append('span').attr('class','badge badge-info').text(input[opcion]);
-                    nfecha.append('span').attr('class','close').attr('onclick','eliminarFecha("'+opcion+'")').text('x');
+                    let fpcr = transformDate(d3.select(rect).attr('fecha'));
+                    console.log(dateDiffInDays(fpcr,today));
+                    if (dateDiffInDays(fpcr,today)<=t_pcr_max){
+                        eliminarFecha('tPCR');
+                        d3.selectAll('.'+opcion).style('display','none');
+                        d3.select('#'+opcion+rect.id).style('display','block');
+                        input[opcion]=d3.select(rect).attr('fecha');
+                        let nfecha = d3.select('#f'+opcion).html('').append('span').attr('class','badge badge-info').text(input[opcion]);
+                        nfecha.append('span').attr('class','close').attr('onclick','eliminarFecha("'+opcion+'")').text('x');
+                    }
                 }
                 checkBoton();
                 opcionesDisponibles();
@@ -1172,7 +1176,7 @@ progress.reading-position::-moz-progress-bar {
 
             function transformProb(data){
                 let res = [];
-                const inicio = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                const inicio = transformDate(input['tPCR']);
                 for(let i=0; i<=10; i++){
                     res.push({'dia': addDays(inicio,i) ,'prob': (data['p'+i])?data['p'+i]:0 })
                 }
@@ -1186,6 +1190,7 @@ progress.reading-position::-moz-progress-bar {
             }
 
             function graficarDias(data){
+                console.log(data);
                 d3.select('#graphRow').style('display','flex');
                 let svg = d3.select('#graph').html('');
                 const margen = 100;
@@ -1197,8 +1202,8 @@ progress.reading-position::-moz-progress-bar {
 
                 let todo = svg.append('g').attr('transform','translate('+margen+','+margen+')');
 
-                const inicio = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
+                const inicio = transformDate(input['tPCR']);
+                console.log(inicio);
                 let x = d3.scaleTime().range([0, widthGraph]).domain([addDays(inicio,0),addDays(inicio,10)]);
                 let y = d3.scaleLinear().range([heightGraph, 0]).domain([0,1]);
 
@@ -1212,7 +1217,7 @@ progress.reading-position::-moz-progress-bar {
 
                 todo.append('text')
                     .attr('transform','rotate(-90)')
-                    .attr('y',-alto/2)
+                    .attr('y',-alto*0.75)
                     .attr('x',-y(0.5))
                     .style('font-size',alto/3)
                     .style('fill','#ffffff')
@@ -1287,7 +1292,7 @@ progress.reading-position::-moz-progress-bar {
             function probCalendario(t_pcr,t_onset,U,data){
                 d3.selectAll('.numCal').remove('*');
                 for (let i=0; i<=10; i++){
-                    let fecha = addDays(today,i);
+                    let fecha = addDays(transformDate(input['tPCR']),i);
                     let id = '#d'+fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear();
                     d3.select(id).append('text')
                         .attr('class','numCal')
