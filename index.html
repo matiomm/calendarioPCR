@@ -617,7 +617,7 @@ progress.reading-position::-moz-progress-bar {
 
             <h4 style="color: #ffffff;">Instrucciones</h4>
             <ol>
-                <li>Haz click en el botón <button class="btn btn-primary btn-sm">Toma PCR</button> e indica en el calendario
+                <li>Haz click en el botón <button class="btn btn-info btn-sm">Toma PCR</button> e indica en el calendario
                     la fecha en que el <strong>caso confirmado</strong> se tomó el examen. Esta fecha puede ser como máximo
                     4 días atrás con respecto a la fecha de hoy.
                 </li>
@@ -633,6 +633,24 @@ progress.reading-position::-moz-progress-bar {
                 </li>
                 Para borrar alguna de las fechas haga click en la x ubicada en la esquina superior derecha de las fechas respectivas debajo del calendario.
             </ol>
+            <h4 style="color: #ffffff;">Resultado</h4>
+            <p>
+                A partir de los datos se agregaran dos tipos de números al calendario:
+                <ul>
+                    <li>
+                        En la esquina inferior izquierda, de <span style="color: #dc3545; font-weight: bold">color rojo</span>, se indicara la probabilidad de que te hayas contagiado ese dia debido al <strong>contacto estrecho</strong>
+                        que tuviste con el <strong>caso confirmado</strong>.
+                    </li>
+                    <li>
+                        En la esquina inferior derecha, de <span style="color: #28a745; font-weight: bold">color verde</span>, se indicara la probabilidad de que el examen PCR te salga positivo si lo realizas
+                        ese dia (bajo el supuesto de que te hayas contagiado).
+                        <br>
+                        Adicionalmente se generara un grafico con estas probabilidades, el cual estara al final de la pagina.
+                    </li>
+                </ul>
+
+            </p>
+
 
         </div>
     </div>
@@ -700,7 +718,7 @@ progress.reading-position::-moz-progress-bar {
             </div>
             <div class="row" style="padding-bottom: 10px">
                 <div class="col-lg-2">
-                    <button id="btPCR" class="btn btn-primary btn-sm" onclick="cambiarOpcion('tPCR')">Toma PCR</button>
+                    <button id="btPCR" class="btn btn-info btn-sm" onclick="cambiarOpcion('tPCR')">Toma PCR</button>
                 </div>
                 <div id="ftPCR" class="col-lg-10" style="color: #ffffff">Seleccionar</div>
             </div>
@@ -856,7 +874,7 @@ progress.reading-position::-moz-progress-bar {
                             tPCR.append('rect')
                                 .attr('height', alto / 6)
                                 .attr('width', ancho)
-                                .attr('fill', '#3755BE');
+                                .attr('fill', '#17a2b8');
 
                             tPCR.append('text')
                                 .attr('x', 3)
@@ -1010,7 +1028,7 @@ progress.reading-position::-moz-progress-bar {
                     d3.selectAll('.'+opcion).style('display','none');
                     d3.select('#'+opcion+rect.id).style('display','block');
                     input[opcion]=d3.select(rect).attr('fecha');
-                    let nfecha = d3.select('#f'+opcion).html('').append('span').attr('class','badge bg-primary').text(input[opcion]);
+                    let nfecha = d3.select('#f'+opcion).html('').append('span').attr('class','badge badge-info').text(input[opcion]);
                     nfecha.append('span').attr('class','close').attr('onclick','eliminarFecha("'+opcion+'")').text('x');
                 }
                 checkBoton();
